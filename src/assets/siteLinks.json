@@ -13,5 +13,10 @@
     "icon": "CompactDisc",
     "name": "音乐 部署中",
     "link": ""
+  },
+  {
+    "icon": "PictureFilled",
+    "name": "图库 加密",
+    "link": "https://blog.xshan.top/gallery"
   }
 ]
