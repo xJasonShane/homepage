@@ -1,5 +1,6 @@
 <template>
-  <div class="more-content">人心中的成见是一座大山,任你怎么努力都休想搬动</div>
+  <div class="more-content">年少轻狂，总以为天下事，无可不为</div>
+  <div class="more-content">岁月蹉跎，终感到天下人，力有尽头</div>
 </template>
 
 <style lang="scss" scoped>
