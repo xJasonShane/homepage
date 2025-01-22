@@ -28,5 +28,10 @@
     "icon": "File",
     "name": "RSSHub",
     "link": "https://rss.xshan.top/"
+  },
+  {
+    "icon": "File",
+    "name": "文档库",
+    "link": "https://docs.xshan.top/"
   }
 ]
