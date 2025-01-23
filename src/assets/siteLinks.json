@@ -25,12 +25,12 @@
     "link": "https://blog.xshan.top/ressource"
   },
   {
-    "icon": "File",
+    "icon": "Rss",
     "name": "RSSHub",
     "link": "https://rss.xshan.top/"
   },
   {
-    "icon": "File",
+    "icon": "Dochub",
     "name": "文档库",
     "link": "https://docs.xshan.top/"
   }
