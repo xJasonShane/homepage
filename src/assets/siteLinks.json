@@ -5,6 +5,26 @@
     "link": "https://blog.xshan.top/"
   },
   {
+    "icon": "Images",
+    "name": "图库",
+    "link": "https://photos.xshan.top/"
+  },
+  {
+    "icon": "Dochub",
+    "name": "文档",
+    "link": "https://docs.xshan.top/"
+  },
+  {
+    "icon": "Rss",
+    "name": "RSSHub",
+    "link": "https://rss.xshan.top/"
+  },
+  {
+    "icon": "LaptopCode",
+    "name": "站点监测",
+    "link": "https://status.xshan.top/"
+  },
+  {
     "icon": "Cloud",
     "name": "网盘 部署中",
     "link": ""
@@ -13,25 +33,5 @@
     "icon": "CompactDisc",
     "name": "音乐 部署中",
     "link": ""
-  },
-  {
-    "icon": "Images",
-    "name": "图库",
-    "link": "https://photos.xshan.top/"
-  },
-  {
-    "icon": "File",
-    "name": "资源库",
-    "link": "https://blog.xshan.top/ressource"
-  },
-  {
-    "icon": "Rss",
-    "name": "RSSHub",
-    "link": "https://rss.xshan.top/"
-  },
-  {
-    "icon": "Dochub",
-    "name": "文档库",
-    "link": "https://docs.xshan.top/"
   }
 ]
