@@ -20,14 +20,19 @@
     "link": "https://hot.xshan.top/#/"
   },
   {
-    "icon": "Rss",
-    "name": "RSSHub",
-    "link": "https://rss.xshan.top/"
+    "icon": "Fire",
+    "name": "导航",
+    "link": "https://nav.xshan.top/"
   },
   {
     "icon": "Code",
     "name": "站点监测",
     "link": "https://status.xshan.top/"
+  },
+  {
+    "icon": "Rss",
+    "name": "RSSHub",
+    "link": "https://rss.xshan.top/"
   },
   {
     "icon": "Cloud",
