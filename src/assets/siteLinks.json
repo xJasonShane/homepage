@@ -11,8 +11,8 @@
   },
   {
     "icon": "Share",
-    "name": "分享",
-    "link": "https://share.xshan.top/"
+    "name": "资源",
+    "link": "https://res.xshan.top/"
   },
   {
     "icon": "FireAlt",
@@ -26,7 +26,7 @@
   },
   {
     "icon": "Code",
-    "name": "站点监测",
+    "name": "监测",
     "link": "https://status.xshan.top/"
   },
   {
