@@ -50,22 +50,17 @@ import config from "@/../package.json";
 
 const store = mainStore();
 
-// 页面宽度
 const getWidth = () => {
   store.setInnerWidth(window.innerWidth);
 };
 
-// 加载完成事件
 const loadComplete = () => {
   nextTick(() => {
-    // 欢迎提示
     helloInit();
-    // 默哀模式
     checkDays();
   });
 };
 
-// 监听宽度变化
 watch(
   () => store.innerWidth,
   (value) => {
@@ -77,20 +72,17 @@ watch(
 );
 
 onMounted(() => {
-  // 自定义鼠标
   cursorInit();
 
-  // 屏蔽右键
   document.oncontextmenu = () => {
     ElMessage({
-      message: "为了浏览体验，本站禁用右键",
+      message: "为了浏览体验，站名禁用右键",
       grouping: true,
       duration: 2000,
     });
     return false;
   };
 
-  // 鼠标中键事件
   window.addEventListener("mousedown", (event) => {
     if (event.button == 1) {
       store.backgroundShow = !store.backgroundShow;
@@ -101,20 +93,18 @@ onMounted(() => {
     }
   });
 
-  // 监听当前页面宽度
   getWidth();
   window.addEventListener("resize", getWidth);
 
-  // 控制台输出
   const styleTitle1 = "font-size: 20px;font-weight: 600;color: rgb(244,167,89);";
   const styleTitle2 = "font-size:12px;color: rgb(244,167,89);";
   const styleContent = "color: rgb(30,152,255);";
   const title1 = "無名の主页";
   const title2 = `
  _____ __  __  _______     ____     __
-|_   _|  \\/  |/ ____\\ \\   / /\\ \\   / /
-  | | | \\  / | (___  \\ \\_/ /  \\ \\_/ /
-  | | | |\\/| |\\___ \\  \\   /    \\   /
+|_   _|  \/  |/ ____\ \   / /\ \   / /
+  | | | \  / | (___  \ \_/ /  \ \_\/ /
+  | | | |\/| |\___ \  \   /    \   /
  _| |_| |  | |____) |  | |      | |
 |_____|_|  |_|_____/   |_|      |_|`;
   const content = `\n\n版本: ${config.version}\n主页: ${config.home}\nGithub: ${config.github}`;
@@ -200,36 +190,35 @@ onBeforeUnmount(() => {
         width: calc(100% + 6px);
       }
       @media (min-width: 391px) {
-        // w 1201px ~ max
         padding-left: 0.7vw;
         padding-right: 0.25vw;
-        @media (max-width: 1200px) { // w 1101px ~ 1280px
+        @media (max-width: 1200px) {
           padding-left: 2.3vw;
           padding-right: 1.75vw;
         }
-        @media (max-width: 1100px) { // w 993px ~ 1100px
+        @media (max-width: 1100px) {
           padding-left: 2vw;
           padding-right: calc(2vw - 6px);
         }
-        @media (max-width: 992px) { // w 901px ~ 992px
+        @media (max-width: 992px) {
           padding-left: 2.3vw;
           padding-right: 1.7vw;
         }
-        @media (max-width: 900px) { // w 391px ~ 900px
+        @media (max-width: 900px) {
           padding-left: 2vw;
           padding-right: calc(2vw - 6px);
         }
       }
     }
     .menu {
-      top: 605.64px; // 721px * 0.84
-      left: 170.5px; // 391 * 0.5 - 25px
+      top: 605.64px;
+      left: 170.5px;
       @media (min-width: 391px) {
         left: calc(50% - 25px);
       }
     }
     .f-ter {
-      top: 675px; // 721px - 46px
+      top: 675px;
       @media (min-width: 391px) {
         padding-left: 6px;
       }
@@ -241,7 +230,7 @@ onBeforeUnmount(() => {
       width: 391px;
     }
     .menu {
-      left: 167.5px; // 391px * 0.5 - 28px
+      left: 167.5px;
     }
     .f-ter {
       width: 391px;

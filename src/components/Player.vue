@@ -1,6 +1,6 @@
 <template>
   <APlayer
-    v-if="playList[0]"
+    v-if="playList.length > 0"
     ref="player"
     :audio="playList"
     :autoplay="store.playerAutoplay"
@@ -85,17 +85,21 @@ const listHeight = computed(() => {
 
 // 初始化播放器
 onMounted(() => {
+  if (!props.songId) {
+    store.musicIsOk = false;
+    return;
+  }
   nextTick(() => {
     try {
       getPlayerList(props.songServer, props.songType, props.songId).then((res) => {
         console.log(res);
-        // 更改播放器加载状态
-        store.musicIsOk = true;
-        // 生成歌单
-        playList.value = res;
-        console.log("音乐加载完成");
-        console.log(playList.value);
-        console.log(playIndex.value, playList.value.length, props.volume);
+        if (res && res.length > 0) {
+          playList.value = res;
+          store.musicIsOk = true;
+          console.log("音乐加载完成");
+        } else {
+          store.musicIsOk = false;
+        }
       });
     } catch (err) {
       console.error(err);

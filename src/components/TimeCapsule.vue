@@ -42,7 +42,7 @@ onMounted(() => {
   timeInterval.value = setInterval(() => {
     timeData.value = getTimeCapsule();
     if (startDate.value) startDateText.value = siteDateStatistics(new Date(startDate.value));
-  }, 1000);
+  }, 10000);
 });
 
 onBeforeUnmount(() => {

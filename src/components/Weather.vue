@@ -38,6 +38,36 @@ const weatherData = reactive({
   },
 });
 
+// 天气缓存 Key
+const WEATHER_CACHE_KEY = "weather_cache";
+// 缓存时间 10 分钟
+const WEATHER_CACHE_DURATION = 10 * 60 * 1000;
+
+// 获取缓存的天气数据
+const getCachedWeather = () => {
+  try {
+    const cached = localStorage.getItem(WEATHER_CACHE_KEY);
+    if (cached) {
+      const { data, timestamp } = JSON.parse(cached);
+      if (Date.now() - timestamp < WEATHER_CACHE_DURATION) {
+        return data;
+      }
+    }
+  } catch {
+    // 忽略缓存错误
+  }
+  return null;
+};
+
+// 设置天气缓存
+const setCachedWeather = (data) => {
+  try {
+    localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
+  } catch {
+    // 忽略缓存错误
+  }
+};
+
 // 取出天气平均值
 const getTemperature = (min, max) => {
   try {
@@ -52,6 +82,14 @@ const getTemperature = (min, max) => {
 
 // 获取天气数据
 const getWeatherData = async () => {
+  // 先尝试从缓存获取
+  const cached = getCachedWeather();
+  if (cached) {
+    weatherData.adCode = cached.adCode;
+    weatherData.weather = cached.weather;
+    return;
+  }
+
   try {
     // 获取地理位置信息
     if (!mainKey) {
@@ -61,7 +99,6 @@ const getWeatherData = async () => {
       const data = result.result;
       weatherData.adCode = {
         city: data.city.City || "未知地区",
-        // adcode: data.city.cityId,
       };
       weatherData.weather = {
         weather: data.condition.day_weather,
@@ -89,6 +126,11 @@ const getWeatherData = async () => {
         windpower: result.lives[0].windpower,
       };
     }
+    // 缓存天气数据
+    setCachedWeather({
+      adCode: { ...weatherData.adCode },
+      weather: { ...weatherData.weather },
+    });
   } catch (error) {
     console.error("天气信息获取失败:" + error);
     onError("天气信息获取失败");
@@ -108,7 +150,9 @@ const onError = (message) => {
 };
 
 onMounted(() => {
-  // 调用获取天气
-  getWeatherData();
+  // 延迟加载天气数据，优先显示页面
+  setTimeout(() => {
+    getWeatherData();
+  }, 1500);
 });
 </script>
