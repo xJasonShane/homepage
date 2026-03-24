@@ -22,11 +22,7 @@
     </div>
     <div class="menu">
       <div class="name" v-show="!volumeShow">
-        <span>{{
-          store.getPlayerData.name
-            ? store.getPlayerData.name + " - " + store.getPlayerData.artist
-            : "未播放音乐"
-        }}</span>
+        <span>{{ currentTitle }}</span>
       </div>
       <div class="volume" v-show="volumeShow">
         <div class="icon">
@@ -83,17 +79,20 @@ import Player from "@/components/Player.vue";
 import { mainStore } from "@/store";
 const store = mainStore();
 
-// 音量条数据
 const volumeShow = ref(false);
 const volumeNum = ref(store.musicVolume ? store.musicVolume : 0.7);
 
-// 播放列表数据
 const musicListShow = ref(false);
 const playerRef = ref(null);
 const playerData = reactive({
   server: import.meta.env.VITE_SONG_SERVER,
   type: import.meta.env.VITE_SONG_TYPE,
   id: import.meta.env.VITE_SONG_ID,
+});
+
+const currentTitle = computed(() => {
+  const data = store.getPlayerData;
+  return data && data.name ? data.name + " - " + data.artist : "未播放音乐";
 });
 
 // 开启播放列表
