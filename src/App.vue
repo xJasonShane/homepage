@@ -34,19 +34,21 @@
 </template>
 
 <script setup>
+import { defineAsyncComponent } from "vue";
 import { helloInit, checkDays } from "@/utils/getTime.js";
 import { HamburgerButton, CloseSmall } from "@icon-park/vue-next";
 import { mainStore } from "@/store";
 import { Icon } from "@vicons/utils";
 import Loading from "@/components/Loading.vue";
-import MainLeft from "@/views/Main/Left.vue";
-import MainRight from "@/views/Main/Right.vue";
 import Background from "@/components/Background.vue";
-import Footer from "@/components/Footer.vue";
-import Box from "@/views/Box/index.vue";
-import MoreSet from "@/views/MoreSet/index.vue";
 import cursorInit from "@/utils/cursor.js";
 import config from "@/../package.json";
+
+const MainLeft = defineAsyncComponent(() => import("@/views/Main/Left.vue"));
+const MainRight = defineAsyncComponent(() => import("@/views/Main/Right.vue"));
+const Footer = defineAsyncComponent(() => import("@/components/Footer.vue"));
+const Box = defineAsyncComponent(() => import("@/views/Box/index.vue"));
+const MoreSet = defineAsyncComponent(() => import("@/views/MoreSet/index.vue"));
 
 const store = mainStore();
 
