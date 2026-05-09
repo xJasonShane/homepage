@@ -1,0 +1,42 @@
+[
+  {
+    "icon": "Blog",
+    "name": "博客",
+    "link": "https://blog.xshan.top/"
+  },
+  {
+    "icon": "Images",
+    "name": "图库",
+    "link": "https://photo.xshan.top/"
+  },
+  {
+    "icon": "Share",
+    "name": "资源",
+    "link": "https://res.xshan.top/"
+  },
+  {
+    "icon": "FireAlt",
+    "name": "热点",
+    "link": "https://hot.xshan.top/#/"
+  },
+  {
+    "icon": "Fire",
+    "name": "导航",
+    "link": "https://nav.xshan.top/"
+  },
+  {
+    "icon": "Code",
+    "name": "监测",
+    "link": "https://status.xshan.top/"
+  },
+  {
+    "icon": "Cloud",
+    "name": "网盘 部署中",
+    "link": ""
+  },
+  {
+    "icon": "CompactDisc",
+    "name": "音乐 部署中",
+    "link": ""
+  }
+]
