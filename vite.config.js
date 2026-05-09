@@ -116,7 +116,23 @@ export default ({ mode }) =>
       terserOptions: {
         compress: {
           pure_funcs: ["console.log"],
+          drop_debugger: true,
         },
       },
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            "vue-vendor": ["vue", "pinia"],
+            "element-plus": ["element-plus"],
+          },
+          chunkFileNames: "assets/js/[name]-[hash].js",
+          entryFileNames: "assets/js/[name]-[hash].js",
+          assetFileNames: "assets/[ext]/[name]-[hash].[ext]",
+        },
+      },
+      // 开启 CSS 代码分割
+      cssCodeSplit: true,
+      // 设置 chunk 大小警告限制
+      chunkSizeWarningLimit: 1000,
     },
   });
