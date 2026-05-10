@@ -32,6 +32,7 @@ import { MusicMenu, Error } from "@icon-park/vue-next";
 import { getHitokoto } from "@/api";
 import { mainStore } from "@/store";
 import debounce from "@/utils/debounce.js";
+import LocalStorageCache from "@/utils/cache.js";
 
 const store = mainStore();
 
@@ -44,40 +45,13 @@ const hitokotoData = reactive({
   from: "無名",
 });
 
-// 一言缓存 Key
-const CACHE_KEY = "hitokoto_cache";
-// 缓存时间 30 分钟
-const CACHE_DURATION = 30 * 60 * 1000;
-
-// 获取缓存的一言数据
-const getCachedHitokoto = () => {
-  try {
-    const cached = localStorage.getItem(CACHE_KEY);
-    if (cached) {
-      const { data, timestamp } = JSON.parse(cached);
-      if (Date.now() - timestamp < CACHE_DURATION) {
-        return data;
-      }
-    }
-  } catch {
-    // 忽略缓存错误
-  }
-  return null;
-};
-
-// 缓存一言数据
-const setCachedHitokoto = (data) => {
-  try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
-  } catch {
-    // 忽略缓存错误
-  }
-};
+// 创建缓存实例（30分钟过期）
+const hitokotoCache = new LocalStorageCache("hitokoto_cache", 30 * 60 * 1000);
 
 // 获取一言数据
 const getHitokotoData = async () => {
   // 先尝试从缓存获取
-  const cached = getCachedHitokoto();
+  const cached = hitokotoCache.get();
   if (cached) {
     hitokotoData.text = cached.text;
     hitokotoData.from = cached.from;
@@ -88,7 +62,7 @@ const getHitokotoData = async () => {
     hitokotoData.text = result.hitokoto;
     hitokotoData.from = result.from;
     // 缓存一言数据
-    setCachedHitokoto({ text: result.hitokoto, from: result.from });
+    hitokotoCache.set({ text: result.hitokoto, from: result.from });
   } catch (error) {
     // 只有在数据为空时才提示错误
     if (!hitokotoData.text || hitokotoData.text === "这里应该显示一句话") {

@@ -20,6 +20,7 @@
 <script setup>
 import { getAdcode, getWeather, getOtherWeather } from "@/api";
 import { Error } from "@icon-park/vue-next";
+import LocalStorageCache from "@/utils/cache.js";
 
 // 高德开发者 Key
 const mainKey = import.meta.env.VITE_WEATHER_KEY;
@@ -38,35 +39,8 @@ const weatherData = reactive({
   },
 });
 
-// 天气缓存 Key
-const WEATHER_CACHE_KEY = "weather_cache";
-// 缓存时间 10 分钟
-const WEATHER_CACHE_DURATION = 10 * 60 * 1000;
-
-// 获取缓存的天气数据
-const getCachedWeather = () => {
-  try {
-    const cached = localStorage.getItem(WEATHER_CACHE_KEY);
-    if (cached) {
-      const { data, timestamp } = JSON.parse(cached);
-      if (Date.now() - timestamp < WEATHER_CACHE_DURATION) {
-        return data;
-      }
-    }
-  } catch {
-    // 忽略缓存错误
-  }
-  return null;
-};
-
-// 设置天气缓存
-const setCachedWeather = (data) => {
-  try {
-    localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
-  } catch {
-    // 忽略缓存错误
-  }
-};
+// 创建缓存实例（10分钟过期）
+const weatherCache = new LocalStorageCache("weather_cache", 10 * 60 * 1000);
 
 // 取出天气平均值
 const getTemperature = (min, max) => {
@@ -83,7 +57,7 @@ const getTemperature = (min, max) => {
 // 获取天气数据
 const getWeatherData = async () => {
   // 先尝试从缓存获取
-  const cached = getCachedWeather();
+  const cached = weatherCache.get();
   if (cached) {
     weatherData.adCode = cached.adCode;
     weatherData.weather = cached.weather;
@@ -127,7 +101,7 @@ const getWeatherData = async () => {
       };
     }
     // 缓存天气数据
-    setCachedWeather({
+    weatherCache.set({
       adCode: { ...weatherData.adCode },
       weather: { ...weatherData.weather },
     });
