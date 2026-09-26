@@ -30,6 +30,7 @@ import { Error } from "@icon-park/vue-next";
 const store = mainStore();
 const bgUrl = ref(null);
 const imgTimeout = ref(null);
+const bgTimeout = ref(null);
 const emit = defineEmits(["loadComplete"]);
 
 // 壁纸随机数
@@ -38,6 +39,9 @@ const bgRandom = Math.floor(Math.random() * 9 + 1);
 
 // 更换壁纸链接
 const changeBg = (type) => {
+  // 切换时先清掉上一个源的超时兜底
+  clearTimeout(bgTimeout.value);
+  bgTimeout.value = null;
   if (type == 0) {
     bgUrl.value = `/images/background${bgRandom}.webp`;
   } else if (type == 1) {
@@ -47,10 +51,33 @@ const changeBg = (type) => {
   } else if (type == 3) {
     bgUrl.value = "https://api.vvhan.com/api/wallpaper/acg";
   }
+  // 外部壁纸源超时兜底：5s 内未加载完成则回退本地壁纸
+  if (type != 0) {
+    bgTimeout.value = setTimeout(() => {
+      fallbackToLocal("壁纸源响应超时，已切换回默认壁纸");
+    }, 5000);
+  }
+};
+
+// 回退到本地壁纸
+const fallbackToLocal = (message) => {
+  clearTimeout(bgTimeout.value);
+  bgTimeout.value = null;
+  bgUrl.value = `/images/background${bgRandom}.webp`;
+  ElMessage({
+    message,
+    icon: h(Error, {
+      theme: "filled",
+      fill: "#efefef",
+    }),
+  });
 };
 
 // 图片加载完成
 const imgLoadComplete = () => {
+  // 当前壁纸已成功加载，取消超时兜底
+  clearTimeout(bgTimeout.value);
+  bgTimeout.value = null;
   imgTimeout.value = setTimeout(
     () => {
       store.setImgLoadStatus(true);
@@ -69,14 +96,7 @@ const imgAnimationEnd = () => {
 // 图片显示失败
 const imgLoadError = () => {
   console.error("壁纸加载失败：", bgUrl.value);
-  ElMessage({
-    message: "壁纸加载失败，已临时切换回默认",
-    icon: h(Error, {
-      theme: "filled",
-      fill: "#efefef",
-    }),
-  });
-  bgUrl.value = `/images/background${bgRandom}.webp`;
+  fallbackToLocal("壁纸加载失败，已临时切换回默认");
 };
 
 // 监听壁纸切换
@@ -94,6 +114,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   clearTimeout(imgTimeout.value);
+  clearTimeout(bgTimeout.value);
 });
 </script>
 
