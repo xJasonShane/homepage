@@ -2,6 +2,14 @@
  * 站点配置中心
  * 统一读取并派生 Vite 环境变量，组件层不再直接访问 import.meta.env
  */
+import { version, author, github, home } from "../package.json";
+
+// 应用信息（具名引入，构建时仅打包用到的字段）
+export const appVersion = version;
+export const appAuthor = author;
+export const appGithub = github;
+export const appHome = home;
+
 const env = import.meta.env;
 
 // 站点地址展示分段（如 ["xshan", "top"]），兼容带协议头的写法

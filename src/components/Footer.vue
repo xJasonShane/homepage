@@ -16,8 +16,8 @@
         <!-- 以下信息请不要修改哦 -->
         <span class="hidden">
           &amp;&nbsp;Made&nbsp;by
-          <a :href="config.github" target="_blank">
-            {{ config.author }}
+          <a :href="appGithub" target="_blank">
+            {{ appAuthor }}
           </a>
         </span>
         <!-- 站点备案 -->
@@ -44,8 +44,7 @@
 <script setup>
 import { MusicOne } from "@icon-park/vue-next";
 import { mainStore } from "@/store";
-import { siteLink, siteAuthor, siteStartYear } from "@/config";
-import config from "@/../package.json";
+import { siteLink, siteAuthor, siteStartYear, appGithub, appAuthor } from "@/config";
 
 const store = mainStore();
 const fullYear = new Date().getFullYear();

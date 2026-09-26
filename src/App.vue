@@ -42,7 +42,7 @@ import { Icon } from "@vicons/utils";
 import Loading from "@/components/Loading.vue";
 import Background from "@/components/Background.vue";
 import cursorInit from "@/utils/cursor.js";
-import config from "@/../package.json";
+import { appVersion, appHome, appGithub } from "@/config";
 
 const MainLeft = defineAsyncComponent(() => import("@/views/Main/Left.vue"));
 const MainRight = defineAsyncComponent(() => import("@/views/Main/Right.vue"));
@@ -112,7 +112,7 @@ onMounted(() => {
   | | | |\\/| |\\___ \\  \\   /    \\   /
  _| |_| |  | |____) |  | |      | |
 |_____|_|  |_|_____/   |_|      |_|`;
-  const content = `\n\n版本: ${config.version}\n主页: ${config.home}\nGithub: ${config.github}`;
+  const content = `\n\n版本: ${appVersion}\n主页: ${appHome}\nGithub: ${appGithub}`;
   console.info(`%c${title1} %c${title2} %c${content}`, styleTitle1, styleTitle2, styleContent);
 });
 

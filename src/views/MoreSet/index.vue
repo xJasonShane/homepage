@@ -17,9 +17,9 @@
           <span class="sm">.{{ siteUrl[1] }}</span>
         </div>
         <div class="version">
-          <div class="num">v&nbsp;{{ config.version }}</div>
-          <el-tooltip content="Github 源代码仓库" placement="right" :show-arrow="false">
-            <github-one class="github" theme="outline" size="24" @click="jumpTo(config.github)" />
+            <div class="num">v&nbsp;{{ appVersion }}</div>
+            <el-tooltip content="Github 源代码仓库" placement="right" :show-arrow="false">
+              <github-one class="github" theme="outline" size="24" @click="jumpTo(appGithub)" />
           </el-tooltip>
         </div>
         <el-card class="update">
@@ -54,9 +54,9 @@
 <script setup>
 import { CloseOne, SettingTwo, GithubOne, AddOne, Bug } from "@icon-park/vue-next";
 import { mainStore } from "@/store";
-import { siteHost } from "@/config";
+import { siteHost, appVersion, appGithub } from "@/config";
+import updateLog from "@/assets/updateLog.json";
 import Set from "@/components/Set.vue";
-import config from "@/../package.json";
 
 const store = mainStore();
 const closeShow = ref(false);
@@ -64,16 +64,8 @@ const closeShow = ref(false);
 // 站点链接
 const siteUrl = siteHost;
 
-// 更新日志
-const upData = reactive({
-  new: [
-    "采用 Vue 进行重构",
-    "音乐歌单支持快速自定义",
-    "壁纸支持个性化设置",
-    "音乐播放器支持音量控制",
-  ],
-  fix: ["修复天气 API", "时光胶囊显示错误", "移动端动画及细节", "图标更换为 IconPark"],
-});
+// 更新日志（独立维护于 src/assets/updateLog.json）
+const upData = updateLog;
 
 // 跳转源代码仓库
 const jumpTo = (url) => {
