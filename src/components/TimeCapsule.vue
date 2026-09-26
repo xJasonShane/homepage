@@ -30,18 +30,19 @@
 import { HourglassFull } from "@icon-park/vue-next";
 import { getTimeCapsule, siteDateStatistics } from "@/utils/getTime.js";
 import { mainStore } from "@/store";
+import { siteStartDate } from "@/config";
 const store = mainStore();
 
 // 进度条数据
 const timeData = ref(getTimeCapsule());
-const startDate = ref(import.meta.env.VITE_SITE_START);
+const startDate = siteStartDate;
 const startDateText = ref(null);
 const timeInterval = ref(null);
 
 onMounted(() => {
   timeInterval.value = setInterval(() => {
     timeData.value = getTimeCapsule();
-    if (startDate.value) startDateText.value = siteDateStatistics(new Date(startDate.value));
+    if (startDate) startDateText.value = siteDateStatistics(new Date(startDate));
   }, 10000);
 });
 

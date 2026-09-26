@@ -1,17 +1,15 @@
 # 构建应用
-FROM node:18 AS builder
+FROM node:20-alpine AS builder
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
+# 先复制锁文件以利用层缓存
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN npm install -g pnpm@11 && pnpm install --frozen-lockfile
 COPY . .
-RUN [ ! -e ".env" ] && cp .env.example .env || true
-RUN npm run build
+RUN pnpm run build
 
-# 最小化镜像
-FROM node:18-alpine
-WORKDIR /app
-COPY --from=builder /app/dist ./dist
-RUN npm install -g http-server
+# 静态托管
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 12445
-CMD ["http-server", "dist", "-p", "12445"]
+EXPOSE 80

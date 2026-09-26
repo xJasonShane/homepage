@@ -77,6 +77,7 @@ import {
 } from "@icon-park/vue-next";
 import Player from "@/components/Player.vue";
 import { mainStore } from "@/store";
+import { songConfig } from "@/config";
 const store = mainStore();
 
 const volumeShow = ref(false);
@@ -85,9 +86,9 @@ const volumeNum = ref(store.musicVolume ? store.musicVolume : 0.7);
 const musicListShow = ref(false);
 const playerRef = ref(null);
 const playerData = reactive({
-  server: import.meta.env.VITE_SONG_SERVER,
-  type: import.meta.env.VITE_SONG_TYPE,
-  id: import.meta.env.VITE_SONG_ID,
+  server: songConfig.server,
+  type: songConfig.type,
+  id: songConfig.id,
 });
 
 const currentTitle = computed(() => {

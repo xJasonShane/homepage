@@ -21,9 +21,10 @@
 import { getAdcode, getWeather, getOtherWeather } from "@/api";
 import { Error } from "@icon-park/vue-next";
 import LocalStorageCache from "@/utils/cache.js";
+import { weatherKey } from "@/config";
 
 // 高德开发者 Key
-const mainKey = import.meta.env.VITE_WEATHER_KEY;
+const mainKey = weatherKey;
 
 // 天气数据
 const weatherData = reactive({
