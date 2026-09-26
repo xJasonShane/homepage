@@ -78,6 +78,7 @@ import {
 import Player from "@/components/Player.vue";
 import { mainStore } from "@/store";
 import { songConfig } from "@/config";
+import { registerShortcut, unregisterShortcut } from "@/utils/shortcut.js";
 const store = mainStore();
 
 const volumeShow = ref(false);
@@ -118,24 +119,45 @@ const changeMusicIndex = (type) => {
   playerRef.value.changeSong(type);
 };
 
-// 空格键控制播放
-const handleKeydown = (e) => {
-  if (!store.musicIsOk) {
-    return;
-  }
-  if (e.code == "Space") {
-    changePlayState();
+// 快捷键：M 静音切换
+const lastVolume = ref(0.7);
+const toggleMute = () => {
+  if (volumeNum.value > 0) {
+    lastVolume.value = volumeNum.value;
+    volumeNum.value = 0;
+  } else {
+    volumeNum.value = lastVolume.value || 0.7;
   }
 };
 
+// 快捷键注册（未配置歌单时 Music 不挂载，对应按键自然失效）
+const shortcuts = [
+  [
+    "Space",
+    () => {
+      if (store.musicIsOk) changePlayState();
+    },
+  ],
+  ["KeyM", toggleMute],
+  // 音乐列表弹层打开时优先消费 Esc
+  [
+    "Escape",
+    () => {
+      if (!musicListShow.value) return false;
+      closeMusicList();
+      return true;
+    },
+  ],
+];
+
 onMounted(() => {
-  window.addEventListener("keydown", handleKeydown);
+  shortcuts.forEach(([code, handler]) => registerShortcut(code, handler));
   // 挂载方法至 window
   window.$openList = openMusicList;
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener("keydown", handleKeydown);
+  shortcuts.forEach(([code, handler]) => unregisterShortcut(code, handler));
   delete window.$openList;
 });
 

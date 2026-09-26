@@ -79,8 +79,13 @@
           </el-radio-group>
         </div>
       </el-collapse-item>
-      <el-collapse-item title="其他设置" name="4">
-        <div>设置内容待增加</div>
+      <el-collapse-item title="快捷键" name="4">
+        <div class="shortcut-list">
+          <div v-for="item in shortcutList" :key="item.key" class="item">
+            <span class="key">{{ item.key }}</span>
+            <span class="desc">{{ item.desc }}</span>
+          </div>
+        </div>
       </el-collapse-item>
     </el-collapse>
   </div>
@@ -105,6 +110,15 @@ const {
 
 // 默认选中项
 const activeName = ref("1");
+
+// 快捷键说明
+const shortcutList = [
+  { key: "空格", desc: "播放 / 暂停" },
+  { key: "M", desc: "静音切换" },
+  { key: "B", desc: "切换壁纸" },
+  { key: "S", desc: "打开 / 关闭设置" },
+  { key: "Esc", desc: "关闭当前弹层" },
+];
 
 // 壁纸切换
 const radioChange = () => {
@@ -193,6 +207,25 @@ const radioChange = () => {
                 color: #fff !important;
               }
             }
+          }
+        }
+      }
+      .shortcut-list {
+        .item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 6px 0;
+          font-size: 14px;
+          .key {
+            padding: 2px 10px;
+            background: #ffffff26;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 13px;
+          }
+          .desc {
+            opacity: 0.85;
           }
         }
       }

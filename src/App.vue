@@ -43,6 +43,12 @@ import Loading from "@/components/Loading.vue";
 import Background from "@/components/Background.vue";
 import cursorInit from "@/utils/cursor.js";
 import { appVersion, appHome, appGithub } from "@/config";
+import {
+  initShortcuts,
+  destroyShortcuts,
+  registerShortcut,
+  unregisterShortcut,
+} from "@/utils/shortcut.js";
 
 const MainLeft = defineAsyncComponent(() => import("@/views/Main/Left.vue"));
 const MainRight = defineAsyncComponent(() => import("@/views/Main/Right.vue"));
@@ -84,7 +90,47 @@ const handleMousedown = (event) => {
   }
 };
 
+// 快捷键：B 循环切换壁纸
+const cycleWallpaper = () => {
+  store.coverType = String((Number(store.coverType) + 1) % 4);
+  ElMessage({
+    message: "壁纸已切换",
+    grouping: true,
+  });
+};
+
+// 快捷键：S 打开 / 关闭设置
+const toggleSettings = () => {
+  store.setOpenState = !store.setOpenState;
+};
+
+// 快捷键：Esc 关闭最上层弹层（音乐列表弹层由 Music 组件自行处理并优先消费）
+const closeOverlay = () => {
+  if (store.setOpenState) {
+    store.setOpenState = false;
+  } else if (store.boxOpenState) {
+    store.boxOpenState = false;
+  } else if (store.musicOpenState) {
+    store.musicOpenState = false;
+  } else if (store.backgroundShow) {
+    store.backgroundShow = false;
+  } else {
+    return false;
+  }
+  return true;
+};
+
+// 快捷键注册表（App 生命周期内常驻）
+const globalShortcuts = [
+  ["KeyB", cycleWallpaper],
+  ["KeyS", toggleSettings],
+  ["Escape", closeOverlay],
+];
+
 onMounted(() => {
+  initShortcuts();
+  globalShortcuts.forEach(([code, handler]) => registerShortcut(code, handler));
+
   cursorInit();
 
   document.oncontextmenu = () => {
@@ -117,6 +163,8 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
+  globalShortcuts.forEach(([code, handler]) => unregisterShortcut(code, handler));
+  destroyShortcuts();
   window.removeEventListener("resize", getWidth);
   window.removeEventListener("mousedown", handleMousedown);
 });
