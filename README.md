@@ -63,6 +63,20 @@ docker compose up -d --build
 
 构建完成后访问 `http://localhost:12445` 即可。
 
+## EdgeOne Pages 部署
+
+项目可托管至腾讯云 [EdgeOne Pages](https://edgeone.ai/products/pages),构建命令为 `pnpm build`,输出目录为 `dist`。
+
+高德天气 Key 等敏感信息**不放入代码仓库**,通过部署平台的环境变量在构建时注入:
+
+1. 在 EdgeOne Pages 控制台进入项目 **项目设置 → 环境变量**
+2. 添加变量 `VITE_WEATHER_KEY`,值为高德 Web 服务 Key,作用环境选择「生产环境(构建)」
+3. 重新触发部署即可
+
+Vite 构建时进程环境变量的优先级高于 `.env` 文件,因此在平台注入的值会生效;仓库内的 `.env.production` 始终保持 `VITE_WEATHER_KEY = ""`,不会包含真实 Key。本地开发则将真实 Key 写入 `.env` 或 `.env.production.local`(两者均已被 `.gitignore` 忽略)。
+
+> 注:该 Key 会随前端构建产物一起下发,属于公开前端可见信息。建议在高德控制台为该 Key 配置**域名白名单**,限制仅本站域名可调用,防止被盗用。若不配置 Key,天气组件会自动回退到备用公共接口。
+
 ## 目录结构
 
 ```
