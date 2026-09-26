@@ -86,36 +86,42 @@ const listHeight = computed(() => {
 // 组件初始化时尽早检查 songId
 if (!props.songId) {
   store.musicIsOk = false;
-} else {
-  // 初始化播放器
-  onMounted(() => {
-    nextTick(() => {
-      try {
-        getPlayerList(props.songServer, props.songType, props.songId).then((res) => {
-          console.log(res);
-          if (res && res.length > 0) {
-            playList.value = res;
-            store.musicIsOk = true;
-            console.log("音乐加载完成");
-          } else {
+    } else {
+      // 初始化播放器
+      onMounted(() => {
+        nextTick(async () => {
+          try {
+            const res = await getPlayerList(props.songServer, props.songType, props.songId);
+            if (res && res.length > 0) {
+              playList.value = res;
+              store.musicIsOk = true;
+              console.log("音乐加载完成");
+            } else {
+              store.musicIsOk = false;
+              ElMessage({
+                message: "播放列表为空",
+                grouping: true,
+                icon: h(PlayWrong, {
+                  theme: "filled",
+                  fill: "#efefef",
+                }),
+              });
+            }
+          } catch (err) {
+            console.error(err);
             store.musicIsOk = false;
+            ElMessage({
+              message: "播放器加载失败",
+              grouping: true,
+              icon: h(PlayWrong, {
+                theme: "filled",
+                fill: "#efefef",
+              }),
+            });
           }
         });
-      } catch (err) {
-        console.error(err);
-        store.musicIsOk = false;
-        ElMessage({
-          message: "播放器加载失败",
-          grouping: true,
-          icon: h(PlayWrong, {
-            theme: "filled",
-            fill: "#efefef",
-          }),
-        });
-      }
-    });
-  });
-}
+      });
+    }
 
 // 播放
 const onPlay = () => {

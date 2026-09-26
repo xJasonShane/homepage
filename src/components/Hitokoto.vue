@@ -31,7 +31,7 @@
 import { MusicMenu, Error } from "@icon-park/vue-next";
 import { getHitokoto } from "@/api";
 import { mainStore } from "@/store";
-import debounce from "@/utils/debounce.js";
+import { debounce } from "lodash-es";
 import LocalStorageCache from "@/utils/cache.js";
 
 const store = mainStore();
@@ -49,13 +49,16 @@ const hitokotoData = reactive({
 const hitokotoCache = new LocalStorageCache("hitokoto_cache", 30 * 60 * 1000);
 
 // 获取一言数据
-const getHitokotoData = async () => {
-  // 先尝试从缓存获取
-  const cached = hitokotoCache.get();
-  if (cached) {
-    hitokotoData.text = cached.text;
-    hitokotoData.from = cached.from;
-    return;
+// force 为 true 时跳过缓存直接请求（用于手动点击更新）
+const getHitokotoData = async (force = false) => {
+  if (!force) {
+    // 先尝试从缓存获取
+    const cached = hitokotoCache.get();
+    if (cached) {
+      hitokotoData.text = cached.text;
+      hitokotoData.from = cached.from;
+      return;
+    }
   }
   try {
     const result = await getHitokoto();
@@ -64,8 +67,8 @@ const getHitokotoData = async () => {
     // 缓存一言数据
     hitokotoCache.set({ text: result.hitokoto, from: result.from });
   } catch (error) {
-    // 只有在数据为空时才提示错误
-    if (!hitokotoData.text || hitokotoData.text === "这里应该显示一句话") {
+      // 只有在手动刷新或数据为空时才提示错误
+      if (force || !hitokotoData.text || hitokotoData.text === "这里应该显示一句话") {
       ElMessage({
         message: "一言获取失败",
         icon: h(Error, {
@@ -77,10 +80,11 @@ const getHitokotoData = async () => {
   }
 };
 
-// 更新一言数据
-const updateHitokoto = debounce(() => {
-  getHitokotoData();
-}, 500);
+// 更新一言数据（手动触发，绕过缓存，立即执行并做 500ms 防抖）
+const updateHitokoto = debounce(() => getHitokotoData(true), 500, {
+  leading: true,
+  trailing: false,
+});
 
 onMounted(() => {
   getHitokotoData();

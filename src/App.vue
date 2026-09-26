@@ -73,6 +73,17 @@ watch(
   },
 );
 
+// 中键切换壁纸展示状态
+const handleMousedown = (event) => {
+  if (event.button == 1) {
+    store.backgroundShow = !store.backgroundShow;
+    ElMessage({
+      message: `已${store.backgroundShow ? "开启" : "退出"}壁纸展示状态`,
+      grouping: true,
+    });
+  }
+};
+
 onMounted(() => {
   cursorInit();
 
@@ -85,15 +96,7 @@ onMounted(() => {
     return false;
   };
 
-  window.addEventListener("mousedown", (event) => {
-    if (event.button == 1) {
-      store.backgroundShow = !store.backgroundShow;
-      ElMessage({
-        message: `已${store.backgroundShow ? "开启" : "退出"}壁纸展示状态`,
-        grouping: true,
-      });
-    }
-  });
+  window.addEventListener("mousedown", handleMousedown);
 
   getWidth();
   window.addEventListener("resize", getWidth);
@@ -115,6 +118,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.removeEventListener("resize", getWidth);
+  window.removeEventListener("mousedown", handleMousedown);
 });
 </script>
 
