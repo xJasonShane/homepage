@@ -8,11 +8,9 @@ import { songConfig } from "@/config";
 // 默认请求超时时间（毫秒）
 const REQUEST_TIMEOUT = 10000;
 
-// 备用歌曲 API（公共实例不保证长期可用，建议自建 Meting API 后配置 VITE_SONG_API）
-const FALLBACK_SONG_APIS = [
-  "https://api.injahow.cn/meting/",
-  "https://api.i-meto.com/meting/api",
-];
+// 备用歌曲 API（公共实例不保证长期可用，建议自建 Meting API 后配置 VITE_SONG_API；
+// 候选必须全链路可用——i-meto 的歌单正常但腾讯源音频代理已 404，混入会造成能载入却播不出的更糟状态）
+const FALLBACK_SONG_APIS = ["https://api.injahow.cn/meting/"];
 
 /**
  * 带超时与状态校验的 JSON 请求

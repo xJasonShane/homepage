@@ -12,8 +12,19 @@
     <meta name="author" content="%VITE_SITE_AUTHOR%" />
     <meta name="theme-color" content="#424242" />
     <title>%VITE_SITE_NAME%</title>
+    <!-- HarmonyOS Sans：B 站 CDN 外链（实测 CORS 全开、无防盗链）；
+         若该外链失效，font-family 会自动回退至下方思源黑体 -->
+    <link rel="preconnect" href="https://s1.hdslb.com" />
+    <link rel="stylesheet" href="https://s1.hdslb.com/bfs/static/jinkela/long/font/regular.css" />
+    <!-- 思源黑体（Noto Sans SC）：第二字体，Google Fonts 国内镜像，按需加载 woff2 子集 -->
+    <link rel="preconnect" href="https://fonts.loli.net" />
+    <link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap"
+    />
     <!-- 音乐 API 预解析 -->
-    <link rel="dns-prefetch" href="https://api-meting.xshan.top" />
+    <link rel="dns-prefetch" href="https://api.injahow.cn" />
   </head>
 
   <body>

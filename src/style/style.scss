@@ -19,8 +19,16 @@ body {
   padding: 0;
   background-color: #333;
   overflow: hidden;
-  // 系统字体栈（原 HarmonyOS Sans 外链已因防盗链失效，如需恢复请自托管字体）
+  // 字体继位顺序：HarmonyOS Sans（外链，index.html 引入，字族名为 HarmonyOS_Regular）
+  // → 思源黑体（Noto Sans SC 外链）→ 系统字体栈兜底；
+  // 注意：首位不能放未注册的字族名（如本机的 "HarmonyOS Sans SC"），
+  // 否则 Chromium 不会为后续 @font-face 字族发起按需加载，导致回退字体永远不生效
   font-family:
+    "HarmonyOS_Regular",
+    "Noto Sans SC",
+    "Source Han Sans SC",
+    "Source Han Sans CN",
+    "思源黑体",
     system-ui,
     "PingFang SC",
     "Hiragino Sans GB",
