@@ -34,7 +34,7 @@ export default ({ mode }) =>
               },
             },
             {
-              urlPattern: /(.*?)\.(png|jpe?g|svg|gif|bmp|psd|tiff|tga|eps)/, // 图片缓存
+              urlPattern: /(.*?)\.(png|jpe?g|webp|svg|gif|bmp|psd|tiff|tga|eps)/, // 图片缓存
               handler: "CacheFirst",
               options: {
                 cacheName: "image-cache",
