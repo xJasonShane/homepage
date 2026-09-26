@@ -8,6 +8,12 @@ import { songConfig } from "@/config";
 // 默认请求超时时间（毫秒）
 const REQUEST_TIMEOUT = 10000;
 
+// 备用歌曲 API（公共实例不保证长期可用，建议自建 Meting API 后配置 VITE_SONG_API）
+const FALLBACK_SONG_APIS = [
+  "https://api.injahow.cn/meting/",
+  "https://api.i-meto.com/meting/api",
+];
+
 /**
  * 带超时与状态校验的 JSON 请求
  * @param {string} url 请求地址
@@ -33,11 +39,9 @@ const requestJson = async (url, timeout = REQUEST_TIMEOUT) => {
   }
 };
 
-// 获取音乐播放列表
-export const getPlayerList = async (server, type, id) => {
-  const data = await requestJson(
-    `${songConfig.api}?server=${server}&type=${type}&id=${id}`,
-  );
+// 从指定 Meting API 获取并解析播放列表
+const fetchPlayerList = async (api, server, type, id) => {
+  const data = await requestJson(`${api}?server=${server}&type=${type}&id=${id}`);
 
   // 校验响应结构：必须为非空数组，避免后续取值报错
   if (!Array.isArray(data) || data.length === 0) {
@@ -78,6 +82,24 @@ export const getPlayerList = async (server, type, id) => {
       }))
       .filter((v) => v.url);
   }
+};
+
+// 获取音乐播放列表（主 API 失效时自动回退至备用 API）
+export const getPlayerList = async (server, type, id) => {
+  const apis = [...new Set([songConfig.api, ...FALLBACK_SONG_APIS].filter(Boolean))];
+  if (apis.length === 0) {
+    throw new Error("未配置歌曲 API");
+  }
+  let lastError;
+  for (const api of apis) {
+    try {
+      return await fetchPlayerList(api, server, type, id);
+    } catch (err) {
+      console.error(`歌曲 API（${api}）请求失败: `, err);
+      lastError = err;
+    }
+  }
+  throw lastError;
 };
 
 /**

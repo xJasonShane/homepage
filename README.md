@@ -50,7 +50,7 @@ pnpm preview
 
 - **站点信息**:名称、作者、简介、图标、建站日期、ICP 备案号等
 - **天气 Key**:前往[高德开放平台](https://lbs.amap.com/)申请 Web 服务 Key(免费,每日上限 5000 次);留空则使用公共 API
-- **歌曲 API**:音乐播放器所需的 [Meting API](https://github.com/xizeyoupan/Meting-API) 服务地址,建议自行部署
+- **歌曲 API**:音乐播放器所需的 [Meting API](https://github.com/xizeyoupan/Meting-API) 服务地址,建议自行部署;代码内置了备用公共 API,主 API 失效时会自动回退(公共实例不保证长期可用)
 - **社交链接 / 网站链接**:分别在 `src/assets/socialLinks.json` 与 `src/assets/siteLinks.json` 中配置
 
 ## Docker 部署
