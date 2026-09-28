@@ -55,6 +55,55 @@ const getTemperature = (min, max) => {
   }
 };
 
+// 高德天气（主）：IP 定位 + 实况天气
+const fetchFromAmap = async () => {
+  const adCode = await getAdcode(mainKey);
+  // infocode 10000 但 adcode 为空数组/空串的情况同样视为失效
+  if (adCode.infocode !== "10000" || typeof adCode.adcode !== "string" || !adCode.adcode) {
+    throw new Error("高德地区查询失败");
+  }
+  const result = await getWeather(mainKey, adCode.adcode);
+  const live = result.lives?.[0];
+  if (!live) {
+    throw new Error("高德天气数据为空");
+  }
+  return {
+    adCode: {
+      city: adCode.city,
+      adcode: adCode.adcode,
+    },
+    weather: {
+      weather: live.weather,
+      temperature: live.temperature,
+      winddirection: live.winddirection,
+      windpower: live.windpower,
+    },
+  };
+};
+
+// 教书先生天气（备）：未配置 Key 或高德失效时使用
+const fetchFromOther = async () => {
+  const result = await getOtherWeather();
+  const data = result.result;
+  return {
+    adCode: {
+      city: data.city.City || "未知地区",
+    },
+    weather: {
+      weather: data.condition.day_weather,
+      temperature: getTemperature(data.condition.min_degree, data.condition.max_degree),
+      winddirection: data.condition.day_wind_direction,
+      windpower: data.condition.day_wind_power,
+    },
+  };
+};
+
+// 数据源按优先级排列，与歌曲 API 一致：主源失效自动回退下一源
+const weatherProviders = [
+  { name: "高德天气", fetch: fetchFromAmap, enabled: Boolean(mainKey) },
+  { name: "备用天气", fetch: fetchFromOther, enabled: true },
+];
+
 // 获取天气数据
 const getWeatherData = async () => {
   // 先尝试从缓存获取
@@ -65,49 +114,26 @@ const getWeatherData = async () => {
     return;
   }
 
-  try {
-    // 获取地理位置信息
-    if (!mainKey) {
-      console.log("未配置，使用备用天气接口");
-      const result = await getOtherWeather();
-      const data = result.result;
-      weatherData.adCode = {
-        city: data.city.City || "未知地区",
-      };
-      weatherData.weather = {
-        weather: data.condition.day_weather,
-        temperature: getTemperature(data.condition.min_degree, data.condition.max_degree),
-        winddirection: data.condition.day_wind_direction,
-        windpower: data.condition.day_wind_power,
-      };
-    } else {
-      // 获取 Adcode
-      const adCode = await getAdcode(mainKey);
-      if (adCode.infocode !== "10000") {
-        throw "地区查询失败";
-      }
-      weatherData.adCode = {
-        city: adCode.city,
-        adcode: adCode.adcode,
-      };
-      // 获取天气信息
-      const result = await getWeather(mainKey, weatherData.adCode.adcode);
-      weatherData.weather = {
-        weather: result.lives[0].weather,
-        temperature: result.lives[0].temperature,
-        winddirection: result.lives[0].winddirection,
-        windpower: result.lives[0].windpower,
-      };
+  let lastError;
+  for (const provider of weatherProviders) {
+    if (!provider.enabled) continue;
+    try {
+      const data = await provider.fetch();
+      weatherData.adCode = data.adCode;
+      weatherData.weather = data.weather;
+      // 缓存天气数据
+      weatherCache.set({
+        adCode: { ...data.adCode },
+        weather: { ...data.weather },
+      });
+      return;
+    } catch (error) {
+      console.error(`天气接口（${provider.name}）请求失败:`, error);
+      lastError = error;
     }
-    // 缓存天气数据
-    weatherCache.set({
-      adCode: { ...weatherData.adCode },
-      weather: { ...weatherData.weather },
-    });
-  } catch (error) {
-    console.error("天气信息获取失败:" + error);
-    onError("天气信息获取失败");
   }
+  console.error("天气信息获取失败:" + lastError);
+  onError("天气信息获取失败");
 };
 
 // 报错信息

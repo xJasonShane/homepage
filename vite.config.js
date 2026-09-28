@@ -27,17 +27,33 @@ export default ({ mode }) =>
           clientsClaim: true,
           runtimeCaching: [
             {
-              urlPattern: /(.*?)\.(js|css|woff2|woff|ttf)/, // js / css 静态资源缓存
+              // 带 hash 的同源 js / css 构建产物可长缓存；
+              // B 站字体 CSS 等固定 URL 外链不在此列，交由浏览器 HTTP 缓存
+              urlPattern: /\/assets\/.*\.(js|css)$/,
               handler: "CacheFirst",
               options: {
                 cacheName: "js-css-cache",
+                expiration: { maxEntries: 60, purgeOnQuotaError: true },
               },
             },
             {
-              urlPattern: /(.*?)\.(png|jpe?g|webp|svg|gif|bmp|psd|tiff|tga|eps)/, // 图片缓存
+              // 字体：同源产物与 loli.net 按需子集均为内容稳定地址
+              urlPattern: /(.*?)\.(woff2|woff|ttf)/,
+              handler: "CacheFirst",
+              options: {
+                cacheName: "font-cache",
+                expiration: { maxEntries: 150, purgeOnQuotaError: true },
+              },
+            },
+            {
+              // 图片：仅缓存同源产物；外部壁纸源为随机 / 每日图，
+              // 固定 URL 会造成壁纸冻结与缓存无限增长，故不做运行时缓存，
+              // 离线场景由 Background 组件的超时回退本地壁纸兜底
+              urlPattern: /^https?:\/\/[^/]+\/images\/.+\.(png|jpe?g|webp|svg|gif|ico)$/,
               handler: "CacheFirst",
               options: {
                 cacheName: "image-cache",
+                expiration: { maxEntries: 60, purgeOnQuotaError: true },
               },
             },
           ],
