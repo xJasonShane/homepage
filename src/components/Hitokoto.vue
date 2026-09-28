@@ -28,11 +28,12 @@
 </template>
 
 <script setup>
-import { MusicMenu, Error } from "@icon-park/vue-next";
+import { MusicMenu } from "@icon-park/vue-next";
 import { getHitokoto } from "@/api";
 import { mainStore } from "@/store";
 import { debounce } from "lodash-es";
 import LocalStorageCache from "@/utils/cache.js";
+import { errorToast } from "@/utils/toast.js";
 
 const store = mainStore();
 
@@ -67,15 +68,9 @@ const getHitokotoData = async (force = false) => {
     // 缓存一言数据
     hitokotoCache.set({ text: result.hitokoto, from: result.from });
   } catch (error) {
-      // 只有在手动刷新或数据为空时才提示错误
-      if (force || !hitokotoData.text || hitokotoData.text === "这里应该显示一句话") {
-      ElMessage({
-        message: "一言获取失败",
-        icon: h(Error, {
-          theme: "filled",
-          fill: "#efefef",
-        }),
-      });
+    // 只有在手动刷新或数据为空时才提示错误
+    if (force || !hitokotoData.text || hitokotoData.text === "这里应该显示一句话") {
+      errorToast("一言获取失败");
     }
   }
 };

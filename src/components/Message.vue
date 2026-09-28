@@ -32,9 +32,9 @@
 <script setup>
 import { Icon } from "@vicons/utils";
 import { QuoteLeft, QuoteRight } from "@vicons/fa";
-import { Error } from "@icon-park/vue-next";
 import { mainStore } from "@/store";
 import { siteHost, siteLogo, descText } from "@/config";
+import { errorToast } from "@/utils/toast.js";
 const store = mainStore();
 
 // 主页站点logo
@@ -53,14 +53,7 @@ const changeBox = () => {
   if (store.getInnerWidth >= 721) {
     store.boxOpenState = !store.boxOpenState;
   } else {
-    ElMessage({
-      message: "当前页面宽度不足以开启盒子",
-      grouping: true,
-      icon: h(Error, {
-        theme: "filled",
-        fill: "#efefef",
-      }),
-    });
+    errorToast("当前页面宽度不足以开启盒子");
   }
 };
 

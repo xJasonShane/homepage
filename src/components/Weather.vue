@@ -19,8 +19,8 @@
 
 <script setup>
 import { getAdcode, getWeather, getOtherWeather } from "@/api";
-import { Error } from "@icon-park/vue-next";
 import LocalStorageCache from "@/utils/cache.js";
+import { errorToast } from "@/utils/toast.js";
 import { weatherKey } from "@/config";
 
 // 高德开发者 Key
@@ -70,7 +70,6 @@ const getWeatherData = async () => {
     if (!mainKey) {
       console.log("未配置，使用备用天气接口");
       const result = await getOtherWeather();
-      console.log(result);
       const data = result.result;
       weatherData.adCode = {
         city: data.city.City || "未知地区",
@@ -84,7 +83,6 @@ const getWeatherData = async () => {
     } else {
       // 获取 Adcode
       const adCode = await getAdcode(mainKey);
-      console.log(adCode);
       if (adCode.infocode !== "10000") {
         throw "地区查询失败";
       }
@@ -114,13 +112,7 @@ const getWeatherData = async () => {
 
 // 报错信息
 const onError = (message) => {
-  ElMessage({
-    message,
-    icon: h(Error, {
-      theme: "filled",
-      fill: "#efefef",
-    }),
-  });
+  errorToast(message);
   console.error(message);
 };
 

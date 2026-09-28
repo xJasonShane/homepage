@@ -25,7 +25,7 @@
 
 <script setup>
 import { mainStore } from "@/store";
-import { Error } from "@icon-park/vue-next";
+import { errorToast } from "@/utils/toast.js";
 
 const store = mainStore();
 const bgUrl = ref(null);
@@ -64,13 +64,7 @@ const fallbackToLocal = (message) => {
   clearTimeout(bgTimeout.value);
   bgTimeout.value = null;
   bgUrl.value = `/images/background${bgRandom}.webp`;
-  ElMessage({
-    message,
-    icon: h(Error, {
-      theme: "filled",
-      fill: "#efefef",
-    }),
-  });
+  errorToast(message);
 };
 
 // 图片加载完成
@@ -88,7 +82,6 @@ const imgLoadComplete = () => {
 
 // 图片动画完成
 const imgAnimationEnd = () => {
-  console.log("壁纸加载且动画完成");
   // 加载完成事件
   emit("loadComplete");
 };

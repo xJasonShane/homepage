@@ -84,8 +84,9 @@ const store = mainStore();
 const volumeShow = ref(false);
 const volumeNum = ref(store.musicVolume ? store.musicVolume : 0.7);
 
-const musicListShow = ref(false);
 const playerRef = ref(null);
+// 音乐列表显隐统一存于 store（Esc、导航点击"音乐"等入口共用）
+const musicListShow = computed(() => store.musicListOpenState);
 const playerData = reactive({
   server: songConfig.server,
   type: songConfig.type,
@@ -99,15 +100,21 @@ const currentTitle = computed(() => {
 
 // 开启播放列表
 const openMusicList = () => {
-  musicListShow.value = true;
-  playerRef.value.toggleList();
+  store.musicListOpenState = true;
 };
 
 // 关闭播放列表
 const closeMusicList = () => {
-  musicListShow.value = false;
-  playerRef.value.toggleList();
+  store.musicListOpenState = false;
 };
+
+// APlayer 列表显隐只能切换，统一在状态变化时同步一次
+watch(
+  () => store.musicListOpenState,
+  () => {
+    playerRef.value?.toggleList();
+  },
+);
 
 // 音乐播放暂停
 const changePlayState = () => {
@@ -130,7 +137,7 @@ const toggleMute = () => {
   }
 };
 
-// 快捷键注册（未配置歌单时 Music 不挂载，对应按键自然失效）
+// 快捷键注册（Esc 关闭音乐列表由 App 按弹层层级统一处理）
 const shortcuts = [
   [
     "Space",
@@ -139,26 +146,14 @@ const shortcuts = [
     },
   ],
   ["KeyM", toggleMute],
-  // 音乐列表弹层打开时优先消费 Esc
-  [
-    "Escape",
-    () => {
-      if (!musicListShow.value) return false;
-      closeMusicList();
-      return true;
-    },
-  ],
 ];
 
 onMounted(() => {
   shortcuts.forEach(([code, handler]) => registerShortcut(code, handler));
-  // 挂载方法至 window
-  window.$openList = openMusicList;
 });
 
 onBeforeUnmount(() => {
   shortcuts.forEach(([code, handler]) => unregisterShortcut(code, handler));
-  delete window.$openList;
 });
 
 // 监听音量变化

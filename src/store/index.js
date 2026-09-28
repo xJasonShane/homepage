@@ -11,6 +11,7 @@ export const mainStore = defineStore("main", {
       musicIsOk: false, // 音乐是否加载完成
       musicVolume: 0, // 音乐音量;
       musicOpenState: false, // 音乐面板开启状态
+      musicListOpenState: false, // 音乐列表弹层开启状态
       backgroundShow: false, // 壁纸展示状态
       boxOpenState: false, // 盒子开启状态
       mobileOpenState: false, // 移动端开启状态
@@ -53,13 +54,9 @@ export const mainStore = defineStore("main", {
         this.mobileFuncState = false;
       }
     },
-    // 更改播放状态
-    setPlayerState(value) {
-      if (value) {
-        this.playerState = false;
-      } else {
-        this.playerState = true;
-      }
+    // 更改播放状态（传入音频是否处于暂停）
+    setPlayerPaused(paused) {
+      this.playerState = !paused;
     },
     // 更改歌词
     setPlayerLrc(value) {

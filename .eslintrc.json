@@ -29,7 +29,6 @@
     "onMounted": true,
     "onBeforeUnmount": true,
     "nextTick": true,
-    "ElMessage": true,
-    "$openList": true
+    "ElMessage": true
   }
 }

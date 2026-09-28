@@ -83,52 +83,45 @@ const listHeight = computed(() => {
   return props.listMaxHeight + "px";
 });
 
-// 组件初始化时尽早检查 songId
-if (!props.songId) {
-  store.musicIsOk = false;
-    } else {
-      // 初始化播放器
-      onMounted(() => {
-        nextTick(async () => {
-          try {
-            const res = await getPlayerList(props.songServer, props.songType, props.songId);
-            if (res && res.length > 0) {
-              playList.value = res;
-              store.musicIsOk = true;
-              console.log("音乐加载完成");
-            } else {
-              store.musicIsOk = false;
-              ElMessage({
-                message: "播放列表为空",
-                grouping: true,
-                icon: h(PlayWrong, {
-                  theme: "filled",
-                  fill: "#efefef",
-                }),
-              });
-            }
-          } catch (err) {
-            console.error(err);
-            store.musicIsOk = false;
-            ElMessage({
-              message: "播放器加载失败",
-              grouping: true,
-              icon: h(PlayWrong, {
-                theme: "filled",
-                fill: "#efefef",
-              }),
-            });
-          }
+// 初始化播放器（Player 仅由 Music 在配置歌单 id 后挂载）
+onMounted(() => {
+  nextTick(async () => {
+    try {
+      const res = await getPlayerList(props.songServer, props.songType, props.songId);
+      if (res && res.length > 0) {
+        playList.value = res;
+        store.musicIsOk = true;
+      } else {
+        store.musicIsOk = false;
+        ElMessage({
+          message: "播放列表为空",
+          grouping: true,
+          icon: h(PlayWrong, {
+            theme: "filled",
+            fill: "#efefef",
+          }),
         });
+      }
+    } catch (err) {
+      console.error(err);
+      store.musicIsOk = false;
+      ElMessage({
+        message: "播放器加载失败",
+        grouping: true,
+        icon: h(PlayWrong, {
+          theme: "filled",
+          fill: "#efefef",
+        }),
       });
     }
+  });
+});
 
 // 播放
 const onPlay = () => {
-  console.log("播放");
   playIndex.value = player.value.aplayer.index;
   // 播放状态
-  store.setPlayerState(player.value.audioRef.paused);
+  store.setPlayerPaused(player.value.audioRef.paused);
   // 储存播放器信息
   store.setPlayerData(playList.value[playIndex.value].name, playList.value[playIndex.value].artist);
   ElMessage({
@@ -143,7 +136,7 @@ const onPlay = () => {
 
 // 暂停
 const onPause = () => {
-  store.setPlayerState(player.value.audioRef.paused);
+  store.setPlayerPaused(player.value.audioRef.paused);
 };
 
 // 音频时间更新事件
@@ -182,19 +175,17 @@ const changeSong = (type) => {
 
 // 切换歌曲列表状态
 const toggleList = () => {
-  player.value.toggleList();
+  // 歌单未加载时 APlayer 未渲染，跳过即可
+  player.value?.toggleList();
 };
 
-// 加载音频错误
+// 加载音频错误：多曲列表 2s 后自动切至下一首，单曲仅提示
+let errorSkipTimer = null;
+
 const loadMusicError = () => {
-  let notice = "";
-  if (playList.value.length > 1) {
-    notice = "播放歌曲出现错误，播放器将在 2s 后进行下一首";
-  } else {
-    notice = "播放歌曲出现错误";
-  }
+  const hasMultipleSong = playList.value.length > 1;
   ElMessage({
-    message: notice,
+    message: hasMultipleSong ? "播放歌曲出现错误，播放器将在 2s 后进行下一首" : "播放歌曲出现错误",
     grouping: true,
     icon: h(PlayWrong, {
       theme: "filled",
@@ -202,10 +193,22 @@ const loadMusicError = () => {
       duration: 2000,
     }),
   });
+  if (hasMultipleSong) {
+    // 出错间隔过近时重置计时，避免叠加多次跳曲
+    clearTimeout(errorSkipTimer);
+    errorSkipTimer = setTimeout(() => {
+      errorSkipTimer = null;
+      changeSong(1);
+    }, 2000);
+  }
   console.error(
     "播放歌曲: " + player.value.aplayer.audio[player.value.aplayer.index].name + " 出现错误",
   );
 };
+
+onBeforeUnmount(() => {
+  clearTimeout(errorSkipTimer);
+});
 
 // 暴露子组件方法
 defineExpose({ playToggle, changeVolume, changeSong, toggleList });

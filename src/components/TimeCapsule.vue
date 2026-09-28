@@ -40,10 +40,11 @@ const startDateText = ref(null);
 const timeInterval = ref(null);
 
 onMounted(() => {
+  // 建站日期立即计算一次，避免首帧等待定时器周期
+  if (startDate) startDateText.value = siteDateStatistics(new Date(startDate));
   timeInterval.value = setInterval(() => {
     timeData.value = getTimeCapsule();
-    if (startDate) startDateText.value = siteDateStatistics(new Date(startDate));
-  }, 10000);
+  }, 60000);
 });
 
 onBeforeUnmount(() => {

@@ -80,15 +80,12 @@ const siteIcon = {
 // 链接跳转
 const jumpLink = (data) => {
   if (data.name === "音乐" && store.musicClick) {
-    if (typeof $openList === "function") $openList();
+    // 经 store 打开音乐列表，由 Music 监听状态同步播放器
+    store.musicListOpenState = true;
   } else {
     window.open(data.link, "_blank");
   }
 };
-
-onMounted(() => {
-  console.log(siteLinks);
-});
 </script>
 
 <style lang="scss" scoped>

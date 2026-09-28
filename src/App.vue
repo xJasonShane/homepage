@@ -104,10 +104,12 @@ const toggleSettings = () => {
   store.setOpenState = !store.setOpenState;
 };
 
-// 快捷键：Esc 关闭最上层弹层（音乐列表弹层由 Music 组件自行处理并优先消费）
+// 快捷键：Esc 按视觉层级自上而下关闭弹层（音乐列表状态在 store 中，Music 监听后同步播放器）
 const closeOverlay = () => {
   if (store.setOpenState) {
     store.setOpenState = false;
+  } else if (store.musicListOpenState) {
+    store.musicListOpenState = false;
   } else if (store.boxOpenState) {
     store.boxOpenState = false;
   } else if (store.musicOpenState) {
