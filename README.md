@@ -1,6 +1,6 @@
 # 無名の主页
 
-一个基于 Vue 3 + Vite 构建的个人主页(起始页)项目,支持音乐播放器、天气展示、壁纸切换、站点导航等功能。
+一个基于 Vue 3 + Vite 构建的个人主页(起始页)项目,支持音乐播放器、天气展示、壁纸切换、站点导航、自定义光标等功能,并内置 PWA 离线缓存与全局错误兜底。
 
 > 项目基于 [imsyy/home](https://github.com/imsyy/home) 二次开发。
 
@@ -53,9 +53,13 @@ pnpm preview
 - **歌曲 API**:音乐播放器所需的 [Meting API](https://github.com/xizeyoupan/Meting-API) 服务地址,建议自行部署;代码内置了备用公共 API,主 API 失效时会自动回退(公共实例不保证长期可用)
 - **社交链接 / 网站链接**:分别在 `src/assets/socialLinks.json` 与 `src/assets/siteLinks.json` 中配置
 
+## 自定义壁纸
+
+将壁纸按 `backgroundN.webp` 命名(`N` 为序号,也支持 `png` / `jpg` / `svg` / `gif`)放入 `public/images/` 即可。构建时会自动统计壁纸数量并注入,新增或删除壁纸**无需修改任何代码**。
+
 ## Docker 部署
 
-项目自带 Dockerfile(多阶段构建,基于 nginx 托管静态文件),默认映射端口为 `12445`:
+项目自带 Dockerfile(多阶段构建,基于 nginx 托管静态文件),默认映射端口为 `12445`。Nginx 已配置静态资源缓存策略:构建产物(`/assets/`)长期缓存,字体与图片短缓存,`sw.js` 与 `index.html` 不缓存,以保证 PWA 更新及时生效:
 
 ```bash
 docker compose up -d --build
@@ -80,14 +84,14 @@ Vite 构建时进程环境变量的优先级高于 `.env` 文件,因此在平台
 ## 目录结构
 
 ```
-├── public              # 静态资源(字体、图标等)
+├── public              # 静态资源(壁纸、字体子集、图标等)
 ├── src
 │   ├── api             # 接口请求
-│   ├── assets          # 图片、站点链接等配置
+│   ├── assets          # 图片、字体、站点链接等配置
 │   ├── components      # 通用组件
 │   ├── store           # Pinia 状态
 │   ├── style           # 全局样式
-│   ├── utils           # 工具函数(含全局快捷键)
+│   ├── utils           # 工具函数(含全局快捷键、自定义光标、错误兜底)
 │   ├── views           # 页面
 │   ├── config.js       # 站点配置
 │   └── main.js         # 入口
