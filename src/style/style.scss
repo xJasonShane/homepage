@@ -58,16 +58,25 @@ a:hover {
 }
 
 // 字体文件
+// woff2 为 pyftsubset 生成的按需子集（Pacifico 覆盖全 ASCII，UnidreamLED 覆盖数字/:/.%）
+// 重新生成命令（源字体位于 src/assets/fonts/，不参与打包）：
+// pyftsubset src/assets/fonts/Pacifico-Regular-all.ttf --output-file=public/font/Pacifico-Regular.woff2 --flavor=woff2 --unicodes="U+0020-007E" --layout-features="*" --no-hinting
+// pyftsubset public/font/UnidreamLED.ttf --output-file=public/font/UnidreamLED.woff2 --flavor=woff2 --unicodes="U+0025,U+002E,U+0030-0039,U+003A" --no-hinting
+// TTF 作为旧浏览器兜底（woff2 全主流浏览器支持，实际仅加载 woff2）
 @font-face {
   font-family: "Pacifico-Regular";
   font-display: swap;
-  src: url("/font/Pacifico-Regular.ttf") format("truetype");
+  src:
+    url("/font/Pacifico-Regular.woff2") format("woff2"),
+    url("/font/Pacifico-Regular.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "UnidreamLED";
   font-display: swap;
-  src: url("/font/UnidreamLED.ttf") format("truetype");
+  src:
+    url("/font/UnidreamLED.woff2") format("woff2"),
+    url("/font/UnidreamLED.ttf") format("truetype");
 }
 
 // 基础样式
