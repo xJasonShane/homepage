@@ -25,6 +25,7 @@
 
 <script setup>
 import { mainStore } from "@/store";
+import { wallpaperCount } from "@/config";
 import { errorToast } from "@/utils/toast.js";
 
 const store = mainStore();
@@ -33,9 +34,8 @@ const imgTimeout = ref(null);
 const bgTimeout = ref(null);
 const emit = defineEmits(["loadComplete"]);
 
-// 壁纸随机数
-// 请依据文件夹内的图片个数修改 Math.random() 后面的第一个数字
-const bgRandom = Math.floor(Math.random() * 9 + 1);
+// 壁纸随机数（数量构建期自动统计自 public/images，命名需为 backgroundN.webp）
+const bgRandom = Math.floor(Math.random() * wallpaperCount + 1);
 
 // 更换壁纸链接
 const changeBg = (type) => {

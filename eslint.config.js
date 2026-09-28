@@ -53,6 +53,8 @@ export default [
         ElMessageBox: "readonly",
         ElNotification: "readonly",
         ElLoading: "readonly",
+        // vite.config.js define 构建期注入
+        __WALLPAPER_COUNT__: "readonly",
       },
     },
     rules: {

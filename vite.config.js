@@ -2,15 +2,25 @@
 import { defineConfig, loadEnv } from "vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import { resolve } from "path";
+import { readdirSync } from "fs";
 import { VitePWA } from "vite-plugin-pwa";
 import vue from "@vitejs/plugin-vue";
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import viteCompression from "vite-plugin-compression";
 
+// 构建期统计 public/images 下的默认壁纸数量（命名需为 backgroundN.webp），
+// 注入 __WALLPAPER_COUNT__ 供 Background 组件随机选用，新增 / 删除壁纸无需改代码
+const WALLPAPER_COUNT = readdirSync(resolve(__dirname, "public/images")).filter((name) =>
+  /^background\d+\.(webp|png|jpe?g|svg|gif)$/i.test(name),
+).length;
+
 // https://vitejs.dev/config/
 export default ({ mode }) =>
   defineConfig({
+    define: {
+      __WALLPAPER_COUNT__: JSON.stringify(WALLPAPER_COUNT),
+    },
     plugins: [
       vue(),
       AutoImport({

@@ -50,6 +50,9 @@ export const descText = {
 // 天气
 export const weatherKey = env.VITE_WEATHER_KEY;
 
+// 默认壁纸数量（构建期由 vite.config.js 统计 public/images 后注入，新增 / 删除壁纸无需改代码）
+export const wallpaperCount = __WALLPAPER_COUNT__;
+
 // 音乐播放器
 export const songConfig = {
   api: env.VITE_SONG_API,
