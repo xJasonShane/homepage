@@ -29,7 +29,7 @@ const requestJson = async (url, timeout = REQUEST_TIMEOUT) => {
     return await res.json();
   } catch (err) {
     if (err.name === "AbortError") {
-      throw new Error(`接口请求超时（${timeout / 1000}s）`);
+      throw new Error(`接口请求超时（${timeout / 1000}s）`, { cause: err });
     }
     throw err;
   } finally {

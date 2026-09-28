@@ -1,5 +1,5 @@
-# 构建应用
-FROM node:20-alpine AS builder
+# 构建应用（Vite 7 要求 Node ^20.19.0 || >=22.12.0）
+FROM node:22-alpine AS builder
 WORKDIR /app
 # 先复制锁文件以利用层缓存
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./

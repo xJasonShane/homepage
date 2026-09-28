@@ -67,7 +67,7 @@ const getHitokotoData = async (force = false) => {
     hitokotoData.from = result.from;
     // 缓存一言数据
     hitokotoCache.set({ text: result.hitokoto, from: result.from });
-  } catch (error) {
+  } catch {
     // 只有在手动刷新或数据为空时才提示错误
     if (force || !hitokotoData.text || hitokotoData.text === "这里应该显示一句话") {
       errorToast("一言获取失败");

@@ -25,7 +25,7 @@
 
 ## 开发
 
-本地要求 Node.js 20+,包管理器使用 pnpm(版本由 `package.json` 的 `packageManager` 字段锁定,corepack 会自动启用)。
+本地要求 Node.js 20.19+（或 22.12+/24+）,包管理器使用 pnpm(版本由 `package.json` 的 `packageManager` 字段锁定,corepack 会自动启用)。
 
 ```bash
 # 安装依赖

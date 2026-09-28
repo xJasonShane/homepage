@@ -108,7 +108,7 @@ export default ({ mode }) =>
       viteCompression(),
     ],
     server: {
-      port: "3000",
+      port: 3000,
       open: true,
     },
     resolve: {
@@ -123,7 +123,10 @@ export default ({ mode }) =>
       preprocessorOptions: {
         scss: {
           charset: false,
-          additionalData: `@import "./src/style/global.scss";`,
+          // Vite 7 默认使用 sass 现代编译器 API：
+          // - @import 已弃用，改用 @use（as * 全局展开成员）
+          // - additionalData 的相对路径改为相对各文件解析，故用 @ 别名注入
+          additionalData: `@use "@/style/global.scss" as *;`,
         },
       },
     },

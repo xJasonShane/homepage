@@ -75,7 +75,8 @@ export const mainStore = defineStore("main", {
   persist: {
     key: "data",
     storage: window.localStorage,
-    paths: [
+    // v4 起字段更名为 pick（原 paths）
+    pick: [
       "coverType",
       "musicVolume",
       "siteStartShow",
