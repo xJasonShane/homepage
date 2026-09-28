@@ -6,8 +6,11 @@ import { createPinia } from "pinia";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 // swiper
 import "swiper/css";
+// 全局错误兜底
+import { setupErrorHandler } from "@/utils/errorHandler.js";
 
 const app = createApp(App);
+setupErrorHandler(app);
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
 
